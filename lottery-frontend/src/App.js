@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import web3 from './web3';
 import lottery from './lottery';
@@ -43,12 +42,12 @@ function App() {
       from: accounts[0],
       value: web3.utils.toWei(amount, 'ether')
     });
-    
+
     setMessage('You have been entered!')
   };
 
   const onClick = async () => {
-    const accounts = web3.eth.getAccounts();
+    const accounts = await web3.eth.getAccounts();
 
     setMessage('Waiting on transaction success...')
 
@@ -73,8 +72,7 @@ function App() {
         <h4>Want to try your luck?</h4>
         <div>
           <label>Amount of ether to enter</label>
-          <input value={amount} onChange={event => setAmount(event.target.value)}>
-          </input>
+          <input value={amount} onChange={event => setAmount(event.target.value)} />
         </div>
         <button>Enter</button>
       </form>
