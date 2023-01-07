@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card } from 'semantic-ui-react';
+import { Card, Button } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
+import Layout from '../components/Layout';
 
 function App(){
 
@@ -33,9 +34,21 @@ function App(){
 
 
     return (
-        <div>
-            {renderCampaigns()}
-        </div>
+        <Layout>
+            <div>
+                <h3>Open Campaigns</h3>
+                
+                <Button
+                    floated="right"
+                    content="Create Campaign"
+                    icon="add circle"
+                    primary
+                />
+
+                {renderCampaigns()}
+            </div>
+        </Layout>
+        
     )
 
 }
