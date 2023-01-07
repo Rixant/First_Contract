@@ -4,19 +4,16 @@ contract CampaignFactory {
     address[] public deployedCampaigns;
 
     function createCampaign(uint minimum) public {
-        address  newCampaign = new Campaign(minimum, msg.sender);
+        address newCampaign = new Campaign(minimum, msg.sender);
         deployedCampaigns.push(newCampaign);
     }
 
-    function getDeployedCampaigns() public view returns (address[]){
+    function getDeployedCampaigns() public view returns (address[]) {
         return deployedCampaigns;
     }
-
 }
 
-
 contract Campaign {
-
     struct Request {
         string description;
         uint value;
@@ -44,19 +41,19 @@ contract Campaign {
 
     function contribute() public payable {
         require(msg.value > minimumContribution);
+
         approvers[msg.sender] = true;
         approversCount++;
     }
 
-    function createRequest(string description, uint value, address recipient) 
-        public restricted {
-            Request memory newRequest = Request({
-                description: description,
-                value: value,
-                recipient: recipient,
-                complete: false,
-                approvalCount: 0
-            });
+    function createRequest(string description, uint value, address recipient) public restricted {
+        Request memory newRequest = Request({
+           description: description,
+           value: value,
+           recipient: recipient,
+           complete: false,
+           approvalCount: 0
+        });
 
         requests.push(newRequest);
     }
@@ -71,7 +68,7 @@ contract Campaign {
         request.approvalCount++;
     }
 
-    function finalizeRequest(uint index) public restricted{
+    function finalizeRequest(uint index) public restricted {
         Request storage request = requests[index];
 
         require(request.approvalCount > (approversCount / 2));
@@ -79,6 +76,5 @@ contract Campaign {
 
         request.recipient.transfer(request.value);
         request.complete = true;
-    } 
-
+    }
 }
