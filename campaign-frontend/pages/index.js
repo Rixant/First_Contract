@@ -1,20 +1,43 @@
-import React, { Component } from "react";
-import factory from "../ethereum/factory";
+import React from 'react';
+import { Card } from 'semantic-ui-react';
+import factory from '../ethereum/factory';
 
-class CampaignIndex extends Component {
+function App(){
 
-static async getInitialProps(){
-    const campaigns = await factory.methods.getDeployedCampaigns().call();
+    const [campaigns, setCampaigns] = React.useState([]);
 
-    console.log(campaigns)
-    return {campaigns};
+    React.useEffect( () => {
+
+        // fetch deployed campaign addresses
+        const fetchCampaigns = async () => {
+            const data = await factory.methods.getDeployedCampaigns().call();
+            setCampaigns(data);
+        }
+
+        fetchCampaigns().catch(console.error)
+    });
+
+
+    const renderCampaigns = () => {
+        // redder campaign data in Cards
+        const items = campaigns.map(address => {
+            return {
+                header: address,
+                description: <a>View Campaign</a>,
+                fluid: true
+            };
+        });
+
+        return <Card.Group items={items} /> 
+    }
+
+
+    return (
+        <div>
+            {renderCampaigns()}
+        </div>
+    )
+
 }
- 
 
-  render() {
-    return <div>{this.props.campaigns[0]}</div>;
-
-  }
-}
-
-export default CampaignIndex;
+export default App;
