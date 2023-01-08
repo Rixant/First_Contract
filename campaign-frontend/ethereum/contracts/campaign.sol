@@ -91,6 +91,10 @@ contract Campaign {
         );
     }
 
+    function getAllRequests() public view returns (Request[]) {
+        return requests;
+    }
+
     function getRequestsCount() public view returns (uint) {
         return requests.length;
     }
