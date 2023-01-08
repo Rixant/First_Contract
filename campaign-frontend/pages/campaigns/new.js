@@ -31,7 +31,7 @@ function CampaignNew () {
         } catch (err) {
             setErrorMessage(err.message);
         }
-
+        
         setLoading(false);
     };
 

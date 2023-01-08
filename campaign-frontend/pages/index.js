@@ -41,7 +41,7 @@ function App(){
             <div>
                 <h3>Open Campaigns</h3>
                 
-                <Link route='/campaign/new'>
+                <Link route='/campaigns/new'>
                     <Button
                         floated="right"
                         content="Create Campaign"
@@ -55,7 +55,6 @@ function App(){
         </Layout>
         
     )
-
 }
 
 export default App;
