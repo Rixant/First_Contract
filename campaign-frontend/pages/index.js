@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Button } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/Layout';
+import { Link } from '../routes';
 
 function App(){
 
@@ -24,7 +25,10 @@ function App(){
         const items = campaigns.map(address => {
             return {
                 header: address,
-                description: <a>View Campaign</a>,
+                description: (
+                <Link route={`/campaigns/${address}`}>
+                    View Campaign
+                </Link>),
                 fluid: true
             };
         });
@@ -32,18 +36,19 @@ function App(){
         return <Card.Group items={items} /> 
     }
 
-
     return (
         <Layout>
             <div>
                 <h3>Open Campaigns</h3>
                 
-                <Button
-                    floated="right"
-                    content="Create Campaign"
-                    icon="add circle"
-                    primary
-                />
+                <Link route='/campaign/new'>
+                    <Button
+                        floated="right"
+                        content="Create Campaign"
+                        icon="add circle"
+                        primary
+                    />
+                </Link>
 
                 {renderCampaigns()}
             </div>
