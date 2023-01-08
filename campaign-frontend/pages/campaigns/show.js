@@ -1,37 +1,56 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
+import { Card } from "semantic-ui-react";
 import Layout from "../../components/Layout";
 import MyCampaign from "../../ethereum/campaign";
 
-const CampaignShow = async (props) => {
+const CampaignShow = ({ summary }) => {
+  return (
+    <Layout>
+      <h3>Campaign Show</h3>
+      {summary ? (
+        <Card.Group>
+          <Card>
+            <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
+              <Card.Header>Minimum Contribution</Card.Header>
+              <Card.Description>{summary[0]}</Card.Description>
+            </Card.Content>
+          </Card>
+          <Card>
+            <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
+              <Card.Header>Balance</Card.Header>
+              <Card.Description>{summary[1]}</Card.Description>
+            </Card.Content>
+          </Card>
+          <Card>
+            <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
+              <Card.Header>Requests Count</Card.Header>
+              <Card.Description>{summary[2]}</Card.Description>
+            </Card.Content>
+          </Card>
+          <Card>
+            <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
+              <Card.Header>Approval Count</Card.Header>
+              <Card.Description>{summary[3]}</Card.Description>
+            </Card.Content>
+          </Card>
+          <Card>
+            <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
+              <Card.Header>Manager</Card.Header>
+              <Card.Description>{summary[4]}</Card.Description>
+            </Card.Content>
+          </Card>
+        </Card.Group>
+      ) : (
+        <p>Loading summary...</p>
+      )}
+    </Layout>
+  );
+};
 
-    const [minContribution, setMinContribution] = React.useState(0);
-    const [balance, setBalance] = React.useState(0);
-    const [requestsCount, setRequestsCount] = React.useState(0);
-    const [approversCount, setApproversCount] = React.useState(0);
-    const [manager, setManager] = React.useState('');
-
-    React.useEffect((props) => {
-        const fetchSummary =  async (props) => {
-            const campaign = MyCampaign(props.query.address);
-            const summary = await campaign.methods.getSummary().call();
-            setMinContribution(summary[0]);
-            setBalance(summary[1]);
-            setRequestsCount(summary[2]);
-            setApproversCount(summary[3]);
-            setManager(summary[4]);
-        }
-
-        console.log(summary);
-
-        fetchSummary().catch(console.error);
-    })
-    
-    return (
-      <Layout>
-        <h3>Campaign Show</h3>
-      </Layout>
-    );
-
-}
+CampaignShow.getInitialProps = async (props) => {
+  const campaign = MyCampaign(props.query.address);
+  const summary = await campaign.methods.getSummary().call();
+  return { summary };
+};
 
 export default CampaignShow;
