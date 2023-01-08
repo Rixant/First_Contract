@@ -1,59 +1,65 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card, Grid } from "semantic-ui-react";
 import Layout from "../../components/Layout";
 import MyCampaign from "../../ethereum/campaign";
 import web3 from "../../ethereum/web3";
 import ContributeForm from "../../components/ContributeForm";
 
-const CampaignShow = ({ summary }) => {
+const CampaignShow = ({
+  address,
+  minimumContribution,
+  balance,
+  requestsCount,
+  approversCount,
+  manager,
+}) => {
+  const renderCards = () => {
+    const items = [
+      {
+        header: manager,
+        meta: "Address of Manager",
+        description:
+          "The manager created this campaign and can create requests to withdraw money",
+        style: { overflowWrap: "break-word" },
+      },
+      {
+        header: minimumContribution,
+        meta: "Minimum Contribution (wei)",
+        description:
+          "You must contribute at least this much wei to become an approver",
+      },
+      {
+        header: requestsCount,
+        meta: "Number of Requests",
+        description:
+          "A request tries to withdraw money from the contract. Requests must be approved by approvers",
+      },
+      {
+        header: approversCount,
+        meta: "Number of Approvers",
+        description:
+          "Number of people who have already donated to this campaign",
+      },
+      {
+        header: web3.utils.fromWei(balance, "ether"),
+        meta: "Campaign Balance (ether)",
+        description:
+          "The balance is how much money this campaign has left to spend.",
+      },
+    ];
+
+    return <Card.Group items={items} />;
+  };
 
   return (
     <Layout>
       <h3>Campaign Show</h3>
       <Grid>
-        <Grid.Column width={10}>
-            {summary ? (
-                    <Card.Group>
-                    <Card>
-                        <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
-                        <Card.Header>Minimum Contribution</Card.Header>
-                        <Card.Description>{summary[0]}</Card.Description>
-                        </Card.Content>
-                    </Card>
-                    <Card>
-                        <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
-                        <Card.Header>Balance</Card.Header>
-                        <Card.Description>{summary[1]}</Card.Description>
-                        </Card.Content>
-                    </Card>
-                    <Card>
-                        <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
-                        <Card.Header>Requests Count</Card.Header>
-                        <Card.Description>{summary[2]}</Card.Description>
-                        </Card.Content>
-                    </Card>
-                    <Card>
-                        <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
-                        <Card.Header>Approval Count</Card.Header>
-                        <Card.Description>{summary[3]}</Card.Description>
-                        </Card.Content>
-                    </Card>
-                    <Card>
-                        <Card.Content style={{ textAlign: "left", overflow: "auto" }}>
-                        <Card.Header>Manager</Card.Header>
-                        <Card.Description>{summary[4]}</Card.Description>
-                        </Card.Content>
-                    </Card>
-                    </Card.Group>
-                ) : (
-                    <p>Loading summary...</p>
-                )}
-            </Grid.Column>
-
-            <Grid.Column width={6}>
-                <ContributeForm />
-            </Grid.Column>
-        </Grid>
+        <Grid.Column width={10}>{renderCards()}</Grid.Column>
+        <Grid.Column width={6}>
+          <ContributeForm address={address} />
+        </Grid.Column>
+      </Grid>
     </Layout>
   );
 };
@@ -61,7 +67,17 @@ const CampaignShow = ({ summary }) => {
 CampaignShow.getInitialProps = async (props) => {
   const campaign = MyCampaign(props.query.address);
   const summary = await campaign.methods.getSummary().call();
-  return { summary };
-};
+
+  return {
+    address: props.query.address,
+    minimumContribution: summary[0],
+    balance: summary[1],
+    requestsCount: summary[2],
+    approversCount: summary[3],
+    manager: summary[4]
+  };
+
+}
+
 
 export default CampaignShow;
