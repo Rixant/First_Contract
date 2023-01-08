@@ -1,16 +1,22 @@
 import React from 'react';
-import { Form, Input, Button } from 'semantic-ui-react';
+import { Form, Input, Button, Message } from 'semantic-ui-react';
 import MyCampaign from '../ethereum/campaign';
 import web3 from '../ethereum/web3';
+import { Router } from '../routes';
 
 const ContributeForm = ({address}) => {
 
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState('');
 
     const onSubmit = async (event) => {
         event.preventDefault();
 
         const campaign = MyCampaign(address);
+
+        setLoading(true);
+        setErrorMessage('');
         
         // contibute to the campaign
         try {
@@ -19,13 +25,18 @@ const ContributeForm = ({address}) => {
                 from: accounts[0],
                 value: web3.utils.toWei(value, 'ether')
             });
+
+            Router.replaceRoute(`/campaigns/${address}`)
         } catch (err) {
-            console.log(err)
+            setErrorMessage(err.message);
         }
+
+        setLoading(false);
+        setValue('');
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} error={!!errorMessage}>
             <Form.Field>
                 <label>Amount to Contribute</label>
                 <Input
@@ -35,7 +46,8 @@ const ContributeForm = ({address}) => {
                     labelPosition="right"
                 />
             </Form.Field>
-            <Button primary>
+            <Message error header="Oops!" content={errorMessage} />
+            <Button primary loading={loading}>
                 Contribute
             </Button>
         </Form>
